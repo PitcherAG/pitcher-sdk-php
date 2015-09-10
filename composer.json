@@ -1,21 +1,20 @@
 {
-    "authors": [
-        {
-            "email": "joshua@pitcher.com",
-            "name": "Joshua Heller",
-            "role": "Senior Software Engineer"
-        }
-    ],
-    "autoload": {
-        "psr-0": {
-            "Pitcher\\": "src/"
-        }
-    },
-    "description": "Pitcher ZeroDrive Client",
     "name": "pitcherag/pitcher-zerodrive-client",
+    "description": "Pitcher ZeroDrive Client",
     "require": {
         "guzzlehttp/guzzle": "6.*",
         "fkooman/guzzle-bearer-auth-plugin": "0.2.*",
         "php": ">=5.6"
-    }
+    },
+    "authors": [
+        {
+            "name": "Joshua Heller",
+            "email": "joshua.heller@pitcher.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Pitcher\\": "src/"
+        }
+    },
 }
