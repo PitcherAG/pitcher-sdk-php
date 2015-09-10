@@ -1,6 +1,6 @@
 {
-    "name": "pitcherag/pitcher-zerodrive-client",
-    "description": "Pitcher ZeroDrive Client",
+    "name": "pitcherag/pitcher-sdk-php",
+    "description": "Pitcher SDK for PHP",
     "require": {
         "guzzlehttp/guzzle": "6.*",
         "fkooman/guzzle-bearer-auth-plugin": "0.2.*",
