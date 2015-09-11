@@ -1,5 +1,5 @@
 {
-    "name": "pitcherag/pitcher-sdk-php",
+    "name": "pitcher/pitcher-sdk-php",
     "description": "Pitcher SDK for PHP",
     "require": {
         "guzzlehttp/guzzle": "6.*",
