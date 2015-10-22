@@ -56,22 +56,22 @@ class PitcherClient
         $this->headers = $conf["headers"];
     }
 
-    public function requestAsync($method, $path)
+    public function requestAsync($method, $path, array $options = [])
     {
         $client = new GuzzleHttp\Client();
 
-        $promise = $client->requestAsync($method, $this->endpoint->withPath($path), [
+        $promise = $client->requestAsync($method, $this->endpoint->withPath($path), array_replace_recursive([
             'auth' => [$this->credentials["key"], $this->credentials["secret"]],
             'headers' => $this->headers,
-        ])->then(function($res) {
+        ], $options))->then(function($res) {
             return json_decode($res->getBody(), true);
         });
 
         return $promise;
     }
 
-    public function request($method, $path)
+    public function request($method, $path, array $options = [])
     {
-        return $this->requestAsync($method, $path)->wait();
+        return $this->requestAsync($method, $path, $options)->wait();
     }
 }
