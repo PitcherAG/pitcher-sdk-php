@@ -2,6 +2,7 @@
     "name": "pitcher/pitcher-sdk-php",
     "description": "Pitcher SDK for PHP",
     "require": {
+        "aws/aws-sdk-php": ">=3.3",
         "guzzlehttp/guzzle": ">=5.3|~6.0.1|~6.1",
         "guzzlehttp/psr7": "~1.0",
         "guzzlehttp/promises": "~1.0"
