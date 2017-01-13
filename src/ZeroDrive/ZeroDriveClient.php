@@ -27,49 +27,10 @@ class ZeroDriveClient extends PitcherClient
      * @param array $args
      */
     public function __construct(array $args)
-	{
+    {
         parent::__construct($args);
-	}
-
-    /**
-     * Upload a file
-     *
-     * Accepts the following options:
-     *
-     * - ID: (string) File ID. Required.
-     * - file: (string) Path to zip packaged file.
-     *
-     * @param array $args
-     * @return Promise\PromiseInterface
-     */
-    public function putFileAsync(array $args)
-    {
-        if (!$args)
-            throw new \InvalidArgumentException();
-
-        // required arguments
-        if (!array_key_exists("ID", $args))
-            throw new \InvalidArgumentException("ID");
-
-        // required arguments
-        if (array_key_exists("file", $args) && (!is_file($args["file"]) || false === ($resource = fopen('http://httpbin.org', 'r'))))
-            throw new \InvalidArgumentException("file");
-
-        // set defaults
-        $conf = array_merge([], $args);
-		if(array_key_exists("file", $args)){
-	        return $this->requestAsync("PUT", "/api/extracted-file/upload", [
-	            'query' => "ID=$args[ID]",
-	            'body' => fopen($args["file"], 'r')
-	        ]);
-		}
-		else{
-	        return $this->requestAsync("PUT", "/api/extracted-file/upload", [
-	            'query' => "ID=$args[ID]"
-	        ]);
-		}
-       
     }
+
     /**
      * Upload a file
      *
@@ -81,33 +42,56 @@ class ZeroDriveClient extends PitcherClient
      * @param array $args
      * @return Promise\PromiseInterface
      */
-    public function putFileSync(array $args)
+    public function uploadAsync(array $args)
     {
-        if (!$args)
-            throw new \InvalidArgumentException();
-
         // required arguments
-        if (!array_key_exists("ID", $args))
-            throw new \InvalidArgumentException("ID");
+        if (!$args) throw new \InvalidArgumentException();
+        if (!array_key_exists("ID", $args)) throw new \InvalidArgumentException("ID");
+        if (!array_key_exists("path", $args) || !is_file($args["path"])) throw new \InvalidArgumentException("path");
+        if (!array_key_exists("name", $args)) throw new \InvalidArgumentException("name\"");
 
+        return $this->requestAsync("PUT", "/api/extracted-file/upload", [
+            'query' => "ID=$args[ID]&name=" . urlencode($args[name]),
+            'body' => fopen($args["path"], 'r')
+        ]);
+    }
+
+    /**
+     * Upload a file
+     *
+     * Accepts the following options:
+     *
+     * - ID: (string) File ID. Required.
+     * - file: (string) Path to zip packaged file.
+     *
+     * @param array $args
+     * @return string
+     */
+    public function upload(array $args)
+    {
+        return $this->uploadAsync($args)->wait();
+    }
+
+    /**
+     * Upload a file
+     *
+     * Accepts the following options:
+     *
+     * - ID: (string) File ID. Required.
+     * - file: (string) Path to zip packaged file.
+     *
+     * @param array $args
+     * @return Promise\PromiseInterface
+     */
+    public function publishAsync(array $args)
+    {
         // required arguments
-        if (array_key_exists("file", $args) && (!is_file($args["file"]) || false === ($resource = fopen('http://httpbin.org', 'r'))))
-            throw new \InvalidArgumentException("file");
+        if (!$args) throw new \InvalidArgumentException();
+        if (!array_key_exists("ID", $args)) throw new \InvalidArgumentException("ID");
 
-        // set defaults
-        $conf = array_merge([], $args);
-		if(array_key_exists("file", $args)){
-	        return $this->requestSync("PUT", "/api/extracted-file/upload", [
-	            'query' => "ID=$args[ID]",
-	            'body' => fopen($args["file"], 'r')
-	        ]);
-		}
-		else{
-	        return $this->requestSync("PUT", "/api/extracted-file/upload", [
-	            'query' => "ID=$args[ID]"
-	        ]);
-		}
-       
+        return $this->requestAsync("PUT", "/api/extracted-file/publish", [
+            'query' => "ID=$args[ID]"
+        ]);
     }
 
     /**
@@ -121,14 +105,13 @@ class ZeroDriveClient extends PitcherClient
      * @param array $args
      * @return void
      */
-    public function putFile(array $args)
+    public function publish(array $args)
     {
-		return $this->putFileAsync($args)->wait();
-		//return $this->putFileSync($args);
+        return $this->publishAsync($args)->wait();
     }
 
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
@@ -157,7 +140,7 @@ class ZeroDriveClient extends PitcherClient
     }
 
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
@@ -176,7 +159,7 @@ class ZeroDriveClient extends PitcherClient
     }
 
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
@@ -201,7 +184,7 @@ class ZeroDriveClient extends PitcherClient
 
         // set defaults
         $conf = array_merge([], $args);
-        return $this->requestAsync("PUT", "/api/metadata/$conf[ID]", [ 
+        return $this->requestAsync("PUT", "/api/metadata/$conf[ID]", [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
@@ -225,7 +208,7 @@ class ZeroDriveClient extends PitcherClient
         // set defaults
         $conf = array_merge([], $args);
 
-        return $this->requestSync("PUT", "/api/metadata/$conf[ID]", [ 
+        return $this->requestSync("PUT", "/api/metadata/$conf[ID]", [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
@@ -233,7 +216,7 @@ class ZeroDriveClient extends PitcherClient
         ]);
     }
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
@@ -246,11 +229,11 @@ class ZeroDriveClient extends PitcherClient
     public function putMetadata(array $args)
     {
         return $this->putMetadataAsync($args)->wait();
-		//return $this->putMetadataSync($args);
+        //return $this->putMetadataSync($args);
     }
 
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
@@ -276,8 +259,8 @@ class ZeroDriveClient extends PitcherClient
         // set defaults
         $conf = array_merge([], $args);
 
-        return $this->requestAsync("POST", "/api/repackaged-file/get", 
-            [ 
+        return $this->requestAsync("POST", "/api/repackaged-file/get",
+            [
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
@@ -287,7 +270,7 @@ class ZeroDriveClient extends PitcherClient
     }
 
     /**
-     * Get the basic information about a slideshow. 
+     * Get the basic information about a slideshow.
      *
      * Accepts the following options:
      *
